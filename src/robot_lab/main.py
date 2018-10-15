@@ -6,13 +6,15 @@ from std_msgs.msg import String
 
 def main():
     motor_right = rospy.Publisher('/motor/right', String)
-    motor_left = rospy.Publisher('/motor/right', String)
+    motor_left = rospy.Publisher('/motor/left', String)
+
+    rospy.init_node('main_control')
 
     move_clockwise_message = json.dumps(
-            { 'command': 'move'
+            { 'command': 'run'
             , 'parameters':
                 { 'direction': 'clockwise'
-                , 'speed': 300.0
+                , 'speed': 100.0
                 }
             })
     motor_right.publish(move_clockwise_message)
