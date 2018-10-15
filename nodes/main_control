@@ -5,5 +5,5 @@ from robot_lab import main
 import rospy
 
 if __name__ == '__main__':
-    loginfo('starting main_control...')
+    rospy.loginfo('starting main_control...')
     main()
