@@ -5,8 +5,8 @@ import rospy
 from std_msgs.msg import String
 
 def main():
-    motor_right = rospy.Publisher('/motor/right', String)
-    motor_left = rospy.Publisher('/motor/left', String)
+    motor_right = rospy.Publisher('/motor/right', String, queue_size=1)
+    motor_left = rospy.Publisher('/motor/left', String, queue_size=1)
 
     rospy.init_node('main_control')
 
