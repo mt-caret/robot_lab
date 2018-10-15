@@ -9,7 +9,7 @@ def main():
     motor_left = rospy.Publisher('/motor/left', String, queue_size=1)
 
     rospy.init_node('main_control')
-     rate = rospy.Rate(10)
+    rate = rospy.Rate(10)
 
     move_clockwise_message = json.dumps(
             { 'command': 'run'
