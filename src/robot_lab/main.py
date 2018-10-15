@@ -9,6 +9,7 @@ def main():
     motor_left = rospy.Publisher('/motor/left', String, queue_size=1)
 
     rospy.init_node('main_control')
+     rate = rospy.Rate(10)
 
     move_clockwise_message = json.dumps(
             { 'command': 'run'
@@ -17,7 +18,18 @@ def main():
                 , 'speed': 100.0
                 }
             })
-    motor_right.publish(move_clockwise_message)
+    move_counterclockwise_message = json.dumps(
+            { 'command': 'run'
+            , 'parameters':
+                { 'direction': 'counter-clockwise'
+                , 'speed': 100.0
+                }
+            })
+
+    while not rospy.is_shutdown():
+        motor_left.publish(move_clockwise_message)
+        motor_right.publish(move_counterclockwise_message)
+        rate.sleep()
 
 if __name__ == '__main__':
     sys.exit("main.py should not be called directly! use roslaunch instead.")
