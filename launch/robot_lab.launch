@@ -1,5 +1,5 @@
 <launch>
-  <node name="main_control" pkgs="robot_lab" type="robot_lab_control_node" />
+  <node name="main_control" pkg="robot_lab" type="robot_lab_control_node" />
   <node name="stepper_controller_left" pkg="stepper_controller" type="stepper_controller_node" args="0" >
     <remap from="/motor/inter_eye/command" to="/motor/left" />
   </node>
