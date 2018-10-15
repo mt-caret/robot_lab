@@ -3,5 +3,5 @@
 from robot_lab import main
 
 if __name__ == '__main__':
-  print "starting main_control...'
+  print 'starting main_control...'
   main()

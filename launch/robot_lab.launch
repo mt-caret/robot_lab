@@ -1,9 +1,9 @@
 <launch>
-  <node name="main_control" pkg="robot_lab" type="robot_lab_control_node" />
-  <node name="stepper_controller_left" pkg="stepper_controller" type="stepper_controller_node" args="0" >
+  <node name="main_control" pkg="robot_lab" type="main_control" />
+  <node name="stepper_controller_left" pkg="stepper_controller" type="stepper_controller_node.py" args="0" >
     <remap from="/motor/inter_eye/command" to="/motor/left" />
   </node>
-  <node name="stepper_controller_right" pkg="stepper_controller" type="stepper_controller_node" args="1" >
+  <node name="stepper_controller_right" pkg="stepper_controller" type="stepper_controller_node.py" args="1" >
     <remap from="/motor/inter_eye/command" to="/motor/right" />
   </node>
 </launch>
