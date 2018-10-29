@@ -11,13 +11,13 @@ Motor = Enum('Motor', 'Right Left')
 def generate_message(motor, speed):
     scaling_constant = 100.0
     clamped_speed = max(-1.0, min(1.0, speed))
-    scaled_speed = clamped_speed * scaling_constant
+    regularized_speed = abs(clamped_speed * scaling_constant)
     direction = 'clockwise' if (motor == Motor.Right) == (speed >= 0.0) else 'counter-clockwise'
     message = {
         'command': 'run',
         'parameters': {
             'direction': direction,
-            'speed': scaled_speed
+            'speed': regularized_speed
             }
         }
     return json.dumps(message)
