@@ -23,15 +23,21 @@ def generate_message(motor, speed):
     return json.dumps(message)
 
 def main():
-    motor_right = rospy.Publisher('/motor/right', String, queue_size=1)
-    motor_left = rospy.Publisher('/motor/left', String, queue_size=1)
+    motors = {
+        Motor.Right: rospy.Publisher('/motor/right', String, queue_size=1),
+        Motor.Left: rospy.Publisher('/motor/left', String, queue_size=1)
+    }
+
+    def drive(motor, speed):
+        message = generate_message(motor, speed)
+        motors[motor].publish(message)
 
     rospy.init_node('main_control')
     rate = rospy.Rate(10)
 
     while not rospy.is_shutdown():
-        motor_left.publish(generate_message(Motor.Left, 1.0))
-        motor_right.publish(generate_message(Motor.Right, 1.0))
+        drive(Motor.Left, 1.0)
+        drive(Motor.Right, 1.0)
         rate.sleep()
 
 if __name__ == '__main__':
