@@ -10,8 +10,8 @@
 
   <node name="cv_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="rate" value="10.0"/>
-    <param name="image_width" value="320"/>
-    <param name="image_height" value="240"/>
+    <param name="image_width" value="640"/>
+    <param name="image_height" value="480"/>
   </node>
 
   <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server">
