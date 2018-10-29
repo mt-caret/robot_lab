@@ -13,11 +13,11 @@ def generate_message(motor, speed):
     clamped_speed = max(-1.0, min(1.0, speed))
     scaled_speed = clamped_speed * scaling_constant
     direction = 'clockwise' if (motor == Motor.Right) == (speed >= 0.0) else 'counter-clockwise'
-    message =
-        { 'command': 'run'
-        , 'parameters':
-            { 'direction': direction
-            , 'speed': scaled_speed
+    message = {
+        'command': 'run',
+        'parameters': {
+            'direction': direction,
+            'speed': scaled_speed
             }
         }
     return json.dumps(message)
