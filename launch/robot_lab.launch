@@ -15,7 +15,7 @@
   </node>
 
   <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server">
-    <param name="port" value="10000">
+    <param name="port" value="10000"/>
   </node>
 
   <node name="face_chaser" pkg="face_tracking" type="face_chase.py"/>
