@@ -10,6 +10,11 @@ from enum import Enum
 
 Motor = Enum('Motor', 'Right Left')
 
+motors = {
+    Motor.Right: rospy.Publisher('/motor/right', String, queue_size=1),
+    Motor.Left: rospy.Publisher('/motor/left', String, queue_size=1)
+}
+
 def clamp_range(min_value, max_value, val):
     return max(min_value, min(max_value, val))
 
@@ -27,24 +32,28 @@ def generate_message(motor, speed):
         }
     return json.dumps(message)
 
-def main():
-    motors = {
-        Motor.Right: rospy.Publisher('/motor/right', String, queue_size=1),
-        Motor.Left: rospy.Publisher('/motor/left', String, queue_size=1)
+def drive(motor, speed):
+    message = generate_message(motor, speed)
+    motors[motor].publish(message)
+
+Stop = Enum('Stop', 'Soft Hard')
+
+def stop(stop_type):
+    stop_type_str = 'soft' if stop_type == Stop.Soft else 'hard'
+    stop_message = {
+        'command': 'stop',
+        'parameters': {
+            'type': stop_type_str
+        }
     }
+    stop_message_json = json.dumps(stop_message)
+    motors[Motor.Right].publish(stop_message_json)
+    motors[Motor.Left].publish(stop_message_json)
 
-    def drive(motor, speed):
-        message = generate_message(motor, speed)
-        motors[motor].publish(message)
-
-    def soft_stop():
-        stop_message = json.dumps({ 'command': 'stop', 'parameters': { 'type': 'soft' }})
-        motors[Motor.Right].publish(stop_message)
-        motors[Motor.Left].publish(stop_message)
-
+def face_chaser():
     def callback(data):
         if data.dist == 0.0:
-            soft_stop()
+            stop(Stop.Soft)
             return
         target_distance = 70.0
         target_angle = 0.0
@@ -62,9 +71,12 @@ def main():
         drive(Motor.Right, v_right)
         drive(Motor.Left, v_left)
 
-    rospy.init_node('main_control')
     rospy.Subscriber("/dist", Dist, callback)
     rospy.spin()
+
+def main():
+    rospy.init_node('main_control')
+    face_chaser()
 
 #    rate = rospy.Rate(10)
 #    while not rospy.is_shutdown():
