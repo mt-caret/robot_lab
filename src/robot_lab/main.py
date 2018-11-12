@@ -52,6 +52,17 @@ def stop(stop_type):
     motors[Motor.Right].publish(stop_message_json)
     motors[Motor.Left].publish(stop_message_json)
 
+def align_diff(distance_diff, angle_diff):
+        distance_weight = 0.8
+        angle_weight = 1.0
+
+        v_right = distance_weight * distance_diff + angle_weight * angle_diff
+        v_left  = distance_weight * distance_diff - angle_weight * angle_diff
+        rospy.loginfo("distance_diff: %f, angle_diff: %f, v_right: %f, v_left: %f", distance_diff, angle_diff, v_right, v_left)
+
+        drive(Motor.Right, v_right)
+        drive(Motor.Left, v_left)
+
 def face_chaser():
     def callback(data):
         if data.dist == 0.0:
@@ -63,15 +74,8 @@ def face_chaser():
         distance_diff = (data.dist - target_distance) / 100
         angle_diff = (data.angle - target_angle) / math.pi
 
-        distance_weight = 0.8
-        angle_weight = 1.0
 
-        v_right = distance_weight * distance_diff + angle_weight * angle_diff
-        v_left  = distance_weight * distance_diff - angle_weight * angle_diff
-        rospy.loginfo("distance_diff: %f, angle_diff: %f, v_right: %f, v_left: %f", distance_diff, angle_diff, v_right, v_left)
-
-        drive(Motor.Right, v_right)
-        drive(Motor.Left, v_left)
+        align_diff(distance_diff, angle_diff)
 
     rospy.Subscriber("/dist", Dist, callback)
     rospy.spin()
@@ -88,8 +92,13 @@ def ps3_controller():
     def callback(data):
         l1 = data.buttons[10] == 1
         r1 = data.buttons[11] == 1
-        #left_x_axis = clamp_range(-1.0, 1.0, data.axes[0])
-        if l1:
+        x = clamp_range(-1.0, 1.0, -data.axes[0])
+        y = clamp_range(-1.0, 1.0, data.axes[1])
+        if y != 0.0:
+            distance_diff = y * 10
+            angle_diff = math.atan(x/y)
+            align_diff(distance_diff, angle_diff)
+        elif l1:
             turn(clockwise=False)
         elif r1:
             turn(clockwise=True)
