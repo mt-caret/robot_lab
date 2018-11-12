@@ -5,6 +5,7 @@ import math
 import rospy
 from std_msgs.msg import String
 from face_tracking.msg import Dist
+from sensor_msgs.msg import Joy
 
 from enum import Enum
 
@@ -18,10 +19,11 @@ motors = {
 def clamp_range(min_value, max_value, val):
     return max(min_value, min(max_value, val))
 
+MAX_MOTOR_SPEED = 200.0
+
 def generate_message(motor, speed):
-    scaling_constant = 200.0
     clamped_speed = clamp_range(-1.0, 1.0, speed)
-    regularized_speed = abs(clamped_speed * scaling_constant)
+    regularized_speed = abs(clamped_speed * MAX_MOTOR_SPEED)
     direction = 'clockwise' if (motor == Motor.Right) == (speed >= 0.0) else 'counter-clockwise'
     message = {
         'command': 'run',
@@ -74,9 +76,33 @@ def face_chaser():
     rospy.Subscriber("/dist", Dist, callback)
     rospy.spin()
 
+def turn(clockwise):
+    if clockwise:
+        drive(Motor.Right, -0.5)
+        drive(Motor.Left, 0.5)
+    else:
+        drive(Motor.Right, 0.5)
+        drive(Motor.Left, -0.5)
+
+def ps3_controller():
+    def callback(data):
+        l1 = data.buttons[10] == 1
+        r1 = data.buttons[11] == 1
+        #left_x_axis = clamp_range(-1.0, 1.0, data.axes[0])
+        if l1:
+            turn(clockwise=false)
+        elif l2:
+            turn(clockwise=true)
+        else:
+            stop(Stop.Soft)
+
+    rospy.Subscriber("/joy", Joy, callback)
+    rospy.spin()
+
 def main():
     rospy.init_node('main_control')
-    face_chaser()
+    ps3_controller()
+    #face_chaser()
 
 #    rate = rospy.Rate(10)
 #    while not rospy.is_shutdown():
