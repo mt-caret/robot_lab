@@ -1,9 +1,9 @@
 <launch>
   <node name="main_control" pkg="robot_lab" type="main_control" />
+
   <node name="stepper_controller_left" pkg="stepper_controller" type="stepper_controller_node.py" args="0" >
     <remap from="/motor/inter_eye/command" to="/motor/left" />
   </node>
-
   <node name="stepper_controller_right" pkg="stepper_controller" type="stepper_controller_node.py" args="1" >
     <remap from="/motor/inter_eye/command" to="/motor/right" />
   </node>
@@ -13,7 +13,6 @@
     <param name="image_width" value="640"/>
     <param name="image_height" value="480"/>
   </node>
-
   <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server">
     <param name="port" value="10000"/>
   </node>
@@ -22,5 +21,10 @@
   <node name="generate_data_server" pkg="face_tracking" type="data_generator_server.py"/>
   <node name="train_data_server" pkg="face_tracking" type="data_trainer_server.py"/>
   <node name="face_recognizer" pkg="face_tracking" type="face_recognize.py"/>
+
   <node name="speaker_server" pkg="speak_tools" type="speak_server.py"/>
+
+  <node name="joy" pkg="joy" type="joy_node">
+    <param name="dev_name" value="Sony Playstation SixAxis/DS3" />
+  </node>
 </launch>
