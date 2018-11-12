@@ -91,7 +91,7 @@ def ps3_controller():
         #left_x_axis = clamp_range(-1.0, 1.0, data.axes[0])
         if l1:
             turn(clockwise=false)
-        elif l2:
+        elif r1:
             turn(clockwise=true)
         else:
             stop(Stop.Soft)
