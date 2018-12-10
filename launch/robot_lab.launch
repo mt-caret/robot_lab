@@ -28,4 +28,6 @@
   <node name="joy" pkg="joy" type="joy_node">
     <param name="dev_name" value="Sony Playstation SixAxis/DS3" />
   </node>
+
+  <node name="speech" pkg="voice_control" type="speech.py"/>
 </launch>
