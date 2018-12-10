@@ -29,5 +29,4 @@
   </node>
 
   <node name="speech" pkg="voice_control" type="speech.py"/>
-  <node name="controller" pkg="voice_control" type="controller.py"/>
 </launch>
