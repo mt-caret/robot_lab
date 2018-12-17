@@ -9,6 +9,8 @@ from sensor_msgs.msg import Joy
 
 from enum import Enum
 
+import MeCab
+
 Motor = Enum('Motor', 'Right Left')
 
 motors = {
@@ -108,10 +110,47 @@ def ps3_controller():
     rospy.Subscriber("/joy", Joy, callback)
     rospy.spin()
 
+def voice_controller():
+    def parse(text):
+        m = MeCab.Tagger("-Ochasen")
+        node = m.parseToNode(text)
+        words_list = []
+        while node:
+            word = node.surface
+            wclass = node.feature.split(',')
+            if wclass[0] != 'BOS/EOS':
+                words_list.append(word)
+            node = node.next
+        return words_list
+
+    def callback(msg):
+        words = parse(msg.data)
+        for word in words:
+            if word == "止まれ":
+                stop(Stop.Soft)
+                return
+            elif word == "前":
+                drive(Motor.Right, 0.5)
+                drive(Motor.Left, 0.5)
+                return
+            elif word == "後ろ":
+                drive(Motor.Right, -0.5)
+                drive(Motor.Left, 0.5)
+                return
+            elif word == "右":
+                turn(True)
+                return
+            elif word == "左":
+                turn(False)
+                return
+    rospy.Subscriber("/speech", String, callback) 
+    rospy.spin()           
+
 def main():
     rospy.init_node('main_control')
     ps3_controller()
-    #face_chaser()
+    # face_chaser()
+    # voice_controller()
 
 #    rate = rospy.Rate(10)
 #    while not rospy.is_shutdown():
