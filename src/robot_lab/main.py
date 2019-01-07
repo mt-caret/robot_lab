@@ -36,7 +36,7 @@ def align_diff(distance_diff, angle_diff):
 
     v_right = distance_weight * distance_diff + angle_weight * angle_diff
     v_left  = distance_weight * distance_diff - angle_weight * angle_diff
-    rospy.loginfo("distance_diff: %f, angle_diff: %f, v_right: %f, v_left: %f", distance_diff, angle_diff, v_right, v_left)
+    #rospy.loginfo("distance_diff: %f, angle_diff: %f, v_right: %f, v_left: %f", distance_diff, angle_diff, v_right, v_left)
 
     drive(right_speed=v_right, left_speed=v_left)
 
@@ -50,7 +50,6 @@ def face_chaser():
 
         distance_diff = (data.dist - target_distance) / 100
         angle_diff = (data.angle - target_angle) / math.pi
-
 
         align_diff(distance_diff, angle_diff)
 
@@ -67,11 +66,15 @@ def ps3_controller():
     def callback(data):
         l1 = data.buttons[10] == 1
         r1 = data.buttons[11] == 1
-        x = clamp_range(-1.0, 1.0, -data.axes[0])
-        y = clamp_range(-1.0, 1.0, data.axes[1])
+        x = -data.axes[0]
+        y = data.axes[1]
+        r = math.sqrt(x**2 + y**2)
+        if r > 1.0:
+            x /= r
+            y /= r
         if y != 0.0:
             distance_diff = y * 10
-            angle_diff = math.atan(x/y)
+            angle_diff = math.atan2(y, x)
             align_diff(distance_diff, angle_diff)
         elif l1:
             turn(clockwise=False)
