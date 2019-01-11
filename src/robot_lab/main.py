@@ -7,28 +7,49 @@ import rospy
 from std_msgs.msg import String
 from face_tracking.msg import Dist
 from sensor_msgs.msg import Joy
-from robot_lab.msg import MotorCommand
 
 from enum import Enum
 
 import MeCab
 
-motor = rospy.Publisher('/motor', MotorCommand, queue_size=1)
+Motor = Enum('Motor', 'Right Left')
+
+motors = {
+    Motor.Right: rospy.Publisher('/motor/right', String, queue_size=1),
+    Motor.Left: rospy.Publisher('/motor/left', String, queue_size=1)
+}
 
 def clamp_range(min_value, max_value, val):
     return max(min_value, min(max_value, val))
 
 MAX_MOTOR_SPEED = 3000.0
 
+def generate_message(speed):
+    return json.dumps({
+        'command': 'run',
+        'parameters': {
+            'direction': 'clockwise' if speed >= 0 else 'counter-clockwise',
+            'speed': abs(speed)
+        }
+    })
+
 def drive(right_speed, left_speed):
     right_speed = clamp_range(-1.0, 1.0, right_speed) * MAX_MOTOR_SPEED
     left_speed = clamp_range(-1.0, 1.0, left_speed) * MAX_MOTOR_SPEED
-    motor.publish(MotorCommand(right=right_speed, left=left_speed, hardStop=False))
+    motors[Motor.Right].publish(generate_message(right_speed))
+    motors[Motor.Left].publish(generate_message(left_speed))
 
 Stop = Enum('Stop', 'Soft Hard')
 
 def stop(stop_type):
-    motor.publish(MotorCommand(left=0.0, right=0.0, hardStop=stop_type==Stop.Hard))
+    stop_message = json.dumps({
+        'command': 'stop',
+        'parameters': {
+            'type': 'soft' if stop_type == Stop.Soft else 'hard'
+        }
+    })
+    motors[Motor.Right].publish(stop_message)
+    motors[Motor.Left].publish(stop_message)
 
 def align_diff(distance_diff, angle_diff):
     distance_weight = 0.8
