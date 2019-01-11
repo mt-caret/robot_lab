@@ -23,13 +23,13 @@
   <node name="generate_data_server" pkg="face_tracking" type="data_generator_server.py"/>
   <node name="train_data_server" pkg="face_tracking" type="data_trainer_server.py"/>
   <node name="face_recognizer" pkg="face_tracking" type="face_recognize.py"/>
--->
 
   <node name="speaker_server" pkg="speak_tools" type="speak_server.py"/>
+-->
 
   <node name="joy" pkg="joy" type="joy_node">
     <param name="dev_name" value="Sony Playstation SixAxis/DS3" />
   </node>
 
-  <node name="speech" pkg="voice_control" type="speech.py"/>
+  <!--<node name="speech" pkg="voice_control" type="speech.py"/>-->
 </launch>
