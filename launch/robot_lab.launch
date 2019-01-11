@@ -8,6 +8,7 @@
     <remap from="/motor/inter_eye/command" to="/motor/right" />
   </node>
 
+<!--
   <node name="cv_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="rate" value="10.0"/>
     <param name="image_width" value="640"/>
@@ -21,6 +22,7 @@
   <node name="generate_data_server" pkg="face_tracking" type="data_generator_server.py"/>
   <node name="train_data_server" pkg="face_tracking" type="data_trainer_server.py"/>
   <node name="face_recognizer" pkg="face_tracking" type="face_recognize.py"/>
+-->
 
   <node name="speaker_server" pkg="speak_tools" type="speak_server.py"/>
 

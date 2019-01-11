@@ -19,7 +19,7 @@ motors = {
 def clamp_range(min_value, max_value, val):
     return max(min_value, min(max_value, val))
 
-MAX_MOTOR_SPEED = 200.0
+MAX_MOTOR_SPEED = 150.0
 
 def generate_message(motor, speed):
     clamped_speed = clamp_range(-1.0, 1.0, speed)
