@@ -1,18 +1,14 @@
 <launch>
   <node name="main_control" pkg="robot_lab" type="main_control" />
 
-  <node name="stepper_controller_left" pkg="stepper_controller" type="stepper_controller_node.py" args="0" >
-    <remap from="/motor/inter_eye/command" to="/motor/left" />
-  </node>
-  <node name="stepper_controller_right" pkg="stepper_controller" type="stepper_controller_node.py" args="1" >
-    <remap from="/motor/inter_eye/command" to="/motor/right" />
-  </node>
+  <node name="motor" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0" />
 
 <!--
   <node name="cv_camera" pkg="cv_camera" type="cv_camera_node">
     <param name="rate" value="10.0"/>
     <param name="image_width" value="640"/>
     <param name="image_height" value="480"/>
+    <param name="device_id" value="1"/>
   </node>
   <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server">
     <param name="port" value="10000"/>
@@ -29,4 +25,6 @@
   <node name="joy" pkg="joy" type="joy_node">
     <param name="dev_name" value="Sony Playstation SixAxis/DS3" />
   </node>
+
+  <node name="speech" pkg="voice_control" type="speech.py"/>
 </launch>
